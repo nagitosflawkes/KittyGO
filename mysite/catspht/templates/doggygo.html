@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoggyGO!</title>
+    <style>
+        body {
+            background-color: lightgreen; /* Light Green Background */
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-gap: 20px;
+        }
+        img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 3px solid red; /* Red Frame */
+        }
+        img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+        .doggygo {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #4d2e00; /* Dark Brown Text Color */
+        }
+        .paw {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background-color: #E2F9B8; /* Dark Brown Paw Color */
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+        .buttons {
+            position: fixed;
+            top: 60px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .button {
+            padding: 5px 10px;
+            background-color: #E2F9B8; /* Dark Brown Paw Color */
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="doggygo">DoggyGO!</div>
+
+    <div class="buttons">
+        <div class="button" onclick="window.location.href='http://127.0.0.1:8000/'">Go to KittyGO!</div>
+        <div class="button" onclick="window.location.href='http://127.0.0.1:8000/woofcatgo/'">Go to WoofcatGO!</div>
+        <div class="button" onclick="window.location.reload()">Refresh</div>
+    </div>
+
+    <div class="container" id="dog-pictures">
+        <!-- Dog pictures will be dynamically added here -->
+    </div>
+
+    <script>
+        const dogAPI = 'https://api.thedogapi.com/v1/images/search?limit=10';
+
+        const fetchDogPictures = async () => {
+            try {
+                const response = await fetch(dogAPI);
+                const data = await response.json();
+                const dogPictures = document.getElementById('dog-pictures');
+                data.forEach(dog => {
+                    const img = document.createElement('img');
+                    img.src = dog.url;
+                    img.style.border = '3px solid red'; /* Red Frame */
+                    dogPictures.appendChild(img);
+                });
+            } catch (error) {
+                console.error('Error fetching dog pictures:', error);
+            }
+        };
+
+        const handleScroll = () => {
+            const dogPictures = document.getElementById('dog-pictures');
+            const windowHeight = window.innerHeight;
+            const scrollHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop + windowHeight >= scrollHeight) {
+                fetchDogPictures();
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        // Initial fetch
+        fetchDogPictures();
+    </script>
+</body>
+</html>
